@@ -1,0 +1,35 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '14.21.3'
+
+  - script: |
+      node -v
+      npm -v
+    displayName: 'Verificar versões do Node e npm'
+
+  - script: |
+      cd $(Build.SourcesDirectory)/minhas-financas-app
+      npm install
+    displayName: 'Instalando as dependências'
+
+  - script: |
+      cd $(Build.SourcesDirectory)/minhas-financas-app
+      npm run build
+    displayName: 'Construir build da aplicação'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.SourcesDirectory)/minhas-financas-app/build'
+      ArtifactName: 'jackeline-build-front'
+      publishLocation: 'Container'
+
